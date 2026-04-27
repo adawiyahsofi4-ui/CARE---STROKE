@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareStroke – Pendamping Perawatan Pasien Stroke</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CareStroke" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       SPLASH SCREEN
+  ═══════════════════════════════════════════ -->
+  <section id="splashScreen" class="screen">
+    <div class="splash-wrap fade-in">
+      <div class="splash-logo">
+        <span class="logo-icon">❤️‍🩹</span>
+        <h1>CareStroke</h1>
+        <p class="splash-tagline">Pendamping Cerdas Perawatan Pasien Stroke di Rumah</p>
+      </div>
+      <div class="splash-loader">
+        <div class="loader-track">
+          <div id="splashFill" class="loader-fill"></div>
+        </div>
+        <p id="splashPct" class="loader-pct">Memuat… 0%</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       LOGIN SCREEN
+  ═══════════════════════════════════════════ -->
+  <section id="loginScreen" class="screen">
+    <div class="auth-outer">
+      <div class="auth-card fade-in">
+        <div class="auth-brand">
+          <span class="logo-icon-sm">❤️‍🩹</span>
+          <span class="brand-name">CareStroke</span>
+        </div>
+        <h2 class="auth-title">Selamat Datang</h2>
+        <p class="auth-sub">Masuk untuk mulai memantau kondisi pasien.</p>
+
+        <form id="loginForm" novalidate>
+          <div class="field-group">
+            <label for="loginId">Email atau Nomor HP</label>
+            <input id="loginId" type="text" placeholder="nama@email.com / 08xxxxxxxx" autocomplete="username" />
+            <span class="field-err" id="loginIdErr"></span>
+          </div>
+          <div class="field-group">
+            <label for="loginPass">Password</label>
+            <div class="pass-wrap">
+              <input id="loginPass" type="password" placeholder="Masukkan password" autocomplete="current-password" />
+              <button type="button" class="toggle-pass" data-target="loginPass" aria-label="Tampilkan password">👁</button>
+            </div>
+            <span class="field-err" id="loginPassErr"></span>
+          </div>
+          <button type="submit" class="btn-primary btn-block">Masuk</button>
+        </form>
+
+        <div class="auth-divider"><span>atau</span></div>
+        <button id="goRegisterBtn" class="btn-outline btn-block">📝 Daftar Akun Baru</button>
+        <div class="auth-links">
+          <button id="forgotHint" class="link-btn" type="button">Lupa password? Hubungi admin.</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       REGISTER SCREEN
+  ═══════════════════════════════════════════ -->
+  <section id="registerScreen" class="screen">
+    <div class="auth-outer">
+      <div class="auth-card fade-in">
+        <div class="auth-brand">
+          <span class="logo-icon-sm">❤️‍🩹</span>
+          <span class="brand-name">CareStroke</span>
+        </div>
+        <h2 class="auth-title">Buat Akun</h2>
+        <p class="auth-sub">Daftarkan akun caregiver untuk mulai memantau pasien.</p>
+
+        <form id="registerForm" novalidate>
+          <div class="field-group">
+            <label for="regName">Nama Lengkap</label>
+            <input id="regName" type="text" placeholder="contoh: Salsabila" autocomplete="name" />
+            <span class="field-err" id="regNameErr"></span>
+          </div>
+          <div class="field-group">
+            <label for="regId">Email atau Nomor HP</label>
+            <input id="regId" type="text" placeholder="nama@email.com / 08xxxxxxxx" autocomplete="username" />
+            <span class="field-err" id="regIdErr"></span>
+          </div>
+          <div class="field-group">
+            <label for="regPass">Password</label>
+            <div class="pass-wrap">
+              <input id="regPass" type="password" placeholder="Minimal 6 karakter" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" data-target="regPass" aria-label="Tampilkan password">👁</button>
+            </div>
+            <span class="field-err" id="regPassErr"></span>
+          </div>
+          <button type="submit" class="btn-primary btn-block">Buat Akun</button>
+        </form>
+
+        <button id="goLoginBtn" class="btn-outline btn-block" style="margin-top:10px">Sudah punya akun? Masuk</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN APP (Dashboard + Views)
+  ═══════════════════════════════════════════ -->
+  <section id="mainScreen" class="screen">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="logo-icon-sm">❤️‍🩹</span>
+        <div>
+          <p class="topbar-app">CareStroke</p>
+          <p id="welcomeMsg" class="topbar-user">Selamat datang!</p>
+        </div>
+      </div>
+      <button id="logoutBtn" class="btn-icon" aria-label="Keluar">⏻</button>
+    </header>
+
+    <!-- Views Container -->
+    <main class="main-content">
+
+      <!-- ── DASHBOARD VIEW ── -->
+      <section id="dashboardView" class="view">
+        <div class="section-header">
+          <h2>Dashboard</h2>
+          <p id="todayDate" class="date-label"></p>
+        </div>
+
+        <!-- Status Cards -->
+        <div class="stat-row">
+          <div class="stat-card stat-blue">
+            <p class="stat-label">Catatan Hari Ini</p>
+            <p id="statToday" class="stat-value">–</p>
+          </div>
+          <div class="stat-card stat-green">
+            <p class="stat-label">Total Catatan</p>
+            <p id="statTotal" class="stat-value">0</p>
+          </div>
+          <div class="stat-card stat-orange">
+            <p class="stat-label">Risiko Terakhir</p>
+            <p id="statRisk" class="stat-value">–</p>
+          </div>
+        </div>
+
+        <!-- Quick Menu -->
+        <h3 class="section-title">Menu Utama</h3>
+        <div class="menu-grid">
+          <button class="menu-card" data-view="monitoringView">
+            <span class="menu-icon">📋</span>
+            <span class="menu-label">Monitoring</span>
+            <span class="menu-desc">Input data harian pasien</span>
+          </button>
+          <button class="menu-card" data-view="educationView">
+            <span class="menu-icon">📚</span>
+            <span class="menu-label">Edukasi</span>
+            <span class="menu-desc">Panduan perawatan stroke</span>
+          </button>
+          <button class="menu-card" data-view="historyView">
+            <span class="menu-icon">🗂️</span>
+            <span class="menu-label">Riwayat</span>
+            <span class="menu-desc">Catatan harian sebelumnya</span>
+          </button>
+          <button class="menu-card" data-view="scheduleView">
+            <span class="menu-icon">🕐</span>
+            <span class="menu-label">Jadwal</span>
+            <span class="menu-desc">Jadwal perawatan harian</span>
+          </button>
+        </div>
+
+        <!-- Reminders -->
+        <h3 class="section-title">Pengingat Hari Ini</h3>
+        <div class="reminder-list" id="reminderList"></div>
+
+        <!-- Risk Alert -->
+        <div id="riskAlert" class="risk-box hidden"></div>
+      </section>
+
+      <!-- ── MONITORING VIEW ── -->
+      <section id="monitoringView" class="view">
+        <div class="section-header">
+          <button class="back-btn" data-view="dashboardView">← Kembali</button>
+          <h2>Monitoring Harian</h2>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="steps" id="stepIndicator">
+          <div class="step active" data-step="1"><span>1</span><small>Kondisi</small></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="2"><span>2</span><small>Aktivitas</small></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3"><span>3</span><small>Nutrisi</small></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="4"><span>4</span><small>Checklist</small></div>
+        </div>
+
+        <form id="monitoringForm" novalidate>
+
+          <!-- Step 1: Kondisi Fisik -->
+          <div class="form-step active" id="step1">
+            <div class="form-card">
+              <h3 class="form-card-title">🩺 Kondisi Fisik</h3>
+
+              <div class="field-group">
+                <label for="bodyCondition">Kondisi Umum Tubuh</label>
+                <select id="bodyCondition">
+                  <option value="">— Pilih kondisi —</option>
+                  <option value="Baik">Baik</option>
+                  <option value="Lelah">Lelah</option>
+                  <option value="Nyeri Ringan">Nyeri Ringan</option>
+                  <option value="Nyeri Berat">Nyeri Berat</option>
+                </select>
+                <span class="field-err" id="bodyConditionErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="awareness">Tingkat Kesadaran</label>
+                <select id="awareness">
+                  <option value="">— Pilih tingkat —</option>
+                  <option value="Sadar Penuh">Sadar Penuh</option>
+                  <option value="Mengantuk">Mengantuk</option>
+                  <option value="Menurun">Menurun</option>
+                </select>
+                <span class="field-err" id="awarenessErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="painScale">Skala Nyeri <span class="label-hint">(0 = tidak nyeri, 10 = sangat nyeri)</span></label>
+                <div class="pain-slider-wrap">
+                  <input id="painScale" type="range" min="0" max="10" value="0" class="pain-slider" />
+                  <div class="pain-labels">
+                    <span>0</span><span>5</span><span>10</span>
+                  </div>
+                  <div class="pain-display">
+                    Nyeri: <strong id="painValue">0</strong>/10
+                    <span id="painEmoji" class="pain-emoji">😊</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="bloodPressure">Tekanan Darah <span class="label-hint">(opsional)</span></label>
+                <input id="bloodPressure" type="text" placeholder="contoh: 120/80" />
+              </div>
+            </div>
+            <div class="step-nav">
+              <span></span>
+              <button type="button" class="btn-primary" id="nextStep1">Lanjut →</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Aktivitas -->
+          <div class="form-step" id="step2">
+            <div class="form-card">
+              <h3 class="form-card-title">🏃 Aktivitas & Obat</h3>
+
+              <div class="field-group">
+                <label for="activity">Aktivitas / Latihan Fisik</label>
+                <input id="activity" type="text" placeholder="contoh: latihan ROM 20 menit, jalan kaki" />
+                <span class="field-err" id="activityErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="medication">Konsumsi Obat</label>
+                <input id="medication" type="text" placeholder="contoh: antihipertensi pagi, aspirin" />
+                <span class="field-err" id="medicationErr"></span>
+              </div>
+            </div>
+            <div class="step-nav">
+              <button type="button" class="btn-outline" id="prevStep2">← Kembali</button>
+              <button type="button" class="btn-primary" id="nextStep2">Lanjut →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Nutrisi -->
+          <div class="form-step" id="step3">
+            <div class="form-card">
+              <h3 class="form-card-title">🥗 Nutrisi & Asupan</h3>
+
+              <div class="field-group">
+                <label for="foodIntake">Asupan Makanan</label>
+                <input id="foodIntake" type="text" placeholder="contoh: bubur ayam, sup, buah pisang" />
+                <span class="field-err" id="foodIntakeErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="nutrition">Status Nutrisi</label>
+                <select id="nutrition">
+                  <option value="">— Pilih status —</option>
+                  <option value="Baik">Baik</option>
+                  <option value="Cukup">Cukup</option>
+                  <option value="Kurang">Kurang</option>
+                </select>
+                <span class="field-err" id="nutritionErr"></span>
+              </div>
+            </div>
+            <div class="step-nav">
+              <button type="button" class="btn-outline" id="prevStep3">← Kembali</button>
+              <button type="button" class="btn-primary" id="nextStep3">Lanjut →</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Checklist -->
+          <div class="form-step" id="step4">
+            <div class="form-card">
+              <h3 class="form-card-title">✅ Checklist Harian</h3>
+              <p class="form-card-sub">Centang semua yang sudah dilakukan hari ini.</p>
+
+              <div class="checklist">
+                <label class="check-item">
+                  <input type="checkbox" id="chkRom" />
+                  <span class="check-box"></span>
+                  <span class="check-text">
+                    <strong>Latihan ROM</strong>
+                    <small>Rentang gerak untuk cegah kekakuan sendi</small>
+                  </span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="chkReposition" />
+                  <span class="check-box"></span>
+                  <span class="check-text">
+                    <strong>Reposisi Tubuh</strong>
+                    <small>Ubah posisi tiap 2 jam untuk cegah luka tekan</small>
+                  </span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="chkMeal" />
+                  <span class="check-box"></span>
+                  <span class="check-text">
+                    <strong>Makan Terjadwal</strong>
+                    <small>Pagi, siang, dan malam sesuai jadwal</small>
+                  </span>
+                </label>
+                <label class="check-item">
+                  <input type="checkbox" id="chkMed" />
+                  <span class="check-box"></span>
+                  <span class="check-text">
+                    <strong>Minum Obat</strong>
+                    <small>Semua obat yang diresepkan sudah diminum</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Analysis Preview -->
+            <div id="analysisPreview" class="analysis-box hidden"></div>
+
+            <div class="step-nav">
+              <button type="button" class="btn-outline" id="prevStep4">← Kembali</button>
+              <button type="submit" class="btn-primary btn-save">💾 Simpan Data</button>
+            </div>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- ── EDUCATION VIEW ── -->
+      <section id="educationView" class="view">
+        <div class="section-header">
+          <button class="back-btn" data-view="dashboardView">← Kembali</button>
+          <h2>Edukasi Perawatan</h2>
+        </div>
+
+        <div class="edu-tabs">
+          <button class="edu-tab active" data-tab="nutrisi">🥗 Nutrisi</button>
+          <button class="edu-tab" data-tab="latihan">🏃 Latihan</button>
+          <button class="edu-tab" data-tab="kulit">🛡️ Kulit</button>
+          <button class="edu-tab" data-tab="makan">🍽️ Makan Aman</button>
+          <button class="edu-tab" data-tab="darurat">🚨 Darurat</button>
+        </div>
+
+        <div id="eduContent" class="edu-content"></div>
+      </section>
+
+      <!-- ── HISTORY VIEW ── -->
+      <section id="historyView" class="view">
+        <div class="section-header">
+          <button class="back-btn" data-view="dashboardView">← Kembali</button>
+          <h2>Riwayat Catatan</h2>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <!-- ── SCHEDULE VIEW ── -->
+      <section id="scheduleView" class="view">
+        <div class="section-header">
+          <button class="back-btn" data-view="dashboardView">← Kembali</button>
+          <h2>Jadwal Perawatan Harian</h2>
+        </div>
+        <div class="schedule-list">
+          <div class="schedule-item">
+            <div class="schedule-time">06:30</div>
+            <div class="schedule-detail">
+              <strong>Bangun & Kebersihan Pagi</strong>
+              <p>Cuci muka, sikat gigi, lap badan dengan air hangat.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">07:00</div>
+            <div class="schedule-detail">
+              <strong>Makan Pagi</strong>
+              <p>Makanan lunak, tinggi protein, cukup cairan.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">08:00</div>
+            <div class="schedule-detail">
+              <strong>Obat Pagi</strong>
+              <p>Berikan semua obat pagi sesuai resep dokter.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">09:00</div>
+            <div class="schedule-detail">
+              <strong>Latihan ROM Sesi 1</strong>
+              <p>Latihan rentang gerak seluruh sendi, 15–20 menit.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">10:00</div>
+            <div class="schedule-detail">
+              <strong>Reposisi & Cek Kulit</strong>
+              <p>Ubah posisi tidur, periksa area tulang menonjol.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">12:00</div>
+            <div class="schedule-detail">
+              <strong>Makan Siang</strong>
+              <p>Porsi cukup, variasi sayur dan lauk bergizi.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">14:00</div>
+            <div class="schedule-detail">
+              <strong>Reposisi & Istirahat Siang</strong>
+              <p>Ubah posisi, pastikan kenyamanan pasien.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">15:00</div>
+            <div class="schedule-detail">
+              <strong>Latihan ROM Sesi 2</strong>
+              <p>Sesi latihan kedua, fokus pada sisi yang lemah.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">18:00</div>
+            <div class="schedule-detail">
+              <strong>Obat Malam & Makan Malam</strong>
+              <p>Berikan obat malam, makan malam porsi ringan.</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">20:00</div>
+            <div class="schedule-detail">
+              <strong>Reposisi Malam & Persiapan Tidur</strong>
+              <p>Posisi nyaman, pastikan tidak ada tekanan pada kulit.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="dashboardView">
+        <span class="nav-icon">🏠</span>
+        <span>Beranda</span>
+      </button>
+      <button class="nav-btn" data-view="monitoringView">
+        <span class="nav-icon">📋</span>
+        <span>Monitoring</span>
+      </button>
+      <button class="nav-btn" data-view="educationView">
+        <span class="nav-icon">📚</span>
+        <span>Edukasi</span>
+      </button>
+      <button class="nav-btn" data-view="historyView">
+        <span class="nav-icon">🗂️</span>
+        <span>Riwayat</span>
+      </button>
+    </nav>
+
+  </section><!-- /mainScreen -->
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-card">
+      <div id="loadingLabel" class="loading-label">Memproses…</div>
+      <div class="loader-track">
+        <div id="loadingFill" class="loader-fill"></div>
+      </div>
+      <p id="loadingPct" class="loader-pct">0%</p>
+    </div>
+  </div>
+
+  <!-- Welcome Overlay -->
+  <div id="welcomeOverlay" class="welcome-overlay hidden" role="status" aria-live="polite">
+    <div class="welcome-card">
+      <div class="welcome-logo">
+        <span class="welcome-logo-icon">❤️‍🩹</span>
+      </div>
+      <h2>CareStroke</h2>
+      <p>Pendamping perawatan stroke di rumah</p>
+    </div>
+  </div>
+
+</div><!-- /app -->
+<script src="script.js"></script>
+</body>
+</html>
